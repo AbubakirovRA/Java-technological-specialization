@@ -7,10 +7,12 @@ public class TicTakGame {
     private int[][] board;
     private final static int SIZE = 3;
     private int currentPlayer;
+    private int movesCount;
 
     public TicTakGame() {
         board = new int[SIZE][SIZE];
         currentPlayer = 1;
+        movesCount = 0;
     }
 
     private static int readCoordinate(Scanner scanner, String coordinateName) {
@@ -45,9 +47,13 @@ public class TicTakGame {
     public void makeMove(int row, int col) {
         if (row >= 0 && row < SIZE && col >= 0 && col < SIZE && board[row][col] == 0) {
             board[row][col] = currentPlayer;
-            if (!checkWin()) { // Проверяем, не привел ли ход к победе
-                currentPlayer = 3 - currentPlayer; // Switch to the other player (1 -> 2, 2 -> 1)
+            movesCount++;
+
+            if (movesCount == SIZE * SIZE || checkWin()) {
+                return; // Игра завершается, если ничья или кто-то победил
             }
+
+            currentPlayer = 3 - currentPlayer; // Switch to the other player (1 -> 2, 2 -> 1)
         } else {
             System.err.println("Invalid move!");
         }
@@ -81,6 +87,10 @@ public class TicTakGame {
         return false;
     }
 
+    public boolean isDraw() {
+        return movesCount == SIZE * SIZE && !checkWin();
+    }
+
     public void printBoard() {
         System.out.println("Current Board State:");
         for (int i = 0; i < SIZE; i++) {
@@ -95,6 +105,7 @@ public class TicTakGame {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
             oos.writeObject(board);
             oos.writeInt(currentPlayer);
+            oos.writeInt(movesCount);
             System.out.println("Game state has been saved successfully.");
         } catch (IOException e) {
             System.err.println("Error while saving the game state: " + e.getMessage());
@@ -108,6 +119,7 @@ public class TicTakGame {
             if (loadedBoard.length == SIZE && loadedBoard[0].length == SIZE) {
                 game.board = loadedBoard;
                 game.currentPlayer = ois.readInt();
+                game.movesCount = ois.readInt();
                 System.out.println("Game state has been loaded successfully.");
             } else {
                 System.err.println("Invalid file format. Starting a new game.");
@@ -127,7 +139,7 @@ public class TicTakGame {
 
         boolean playAgain = true;
         while (playAgain) {
-            while (!game.checkWin()) {
+            while (!game.checkWin() && !game.isDraw()) {
                 game.printBoard();
 
                 int[] move;
@@ -146,8 +158,8 @@ public class TicTakGame {
                 } while (move[0] == -2 || game.board[move[0]][move[1]] != 0);
                 game.makeMove(move[0], move[1]);
 
-                if (game.checkWin()) {
-                    break; // Выход из цикла, если кто-то победил
+                if (game.checkWin() || game.isDraw()) {
+                    break; // Выход из цикла, если кто-то победил или ничья
                 }
 
                 game.printBoard();
@@ -179,6 +191,10 @@ public class TicTakGame {
             else if (game.checkWin() && game.currentPlayer == 2) {
                 System.out.println("Player 2 (O) wins!");
             }
+            // Если ничья:
+            else if (game.isDraw()) {
+                System.out.println("It's a draw! No one wins.");
+            }
 
             game.saveGame("game_state.txt");
 
@@ -194,3 +210,4 @@ public class TicTakGame {
         scanner.close();
     }
 }
+
