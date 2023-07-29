@@ -13,50 +13,68 @@ public class TicTakGame {
         currentPlayer = 1;
     }
 
-    private static int readCoordinate(String coordinateName) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            int coordinate = -1;
-            while (coordinate < 0 || coordinate >= SIZE) {
-                System.out.print("Enter " + coordinateName + " (0, 1, or 2): ");
-                if (scanner.hasNextInt()) {
-                    coordinate = scanner.nextInt();
-                } else {
-                    scanner.next(); // clear invalid input
-                }
+    private static int readCoordinate(Scanner scanner, String coordinateName) {
+        int coordinate = -1;
+        while (coordinate < 0 || coordinate >= SIZE) {
+            System.out.print("Enter " + coordinateName + " (0, 1, or 2): ");
+            if (scanner.hasNextInt()) {
+                coordinate = scanner.nextInt();
+            } else {
+                scanner.next(); // clear invalid input
             }
-            return coordinate;
         }
+        return coordinate;
+    }
+
+    private static int[] getPlayerMove(Scanner scanner) {
+        int[] move = new int[2];
+        String input = scanner.next();
+        if (input.equalsIgnoreCase("exit")) {
+            move[0] = -1; // Special value to indicate exit
+            return move;
+        }
+        try {
+            move[0] = Integer.parseInt(input);
+            move[1] = readCoordinate(scanner, "column");
+        } catch (NumberFormatException e) {
+            move[0] = -2; // Special value to indicate invalid input
+        }
+        return move;
     }
 
     public void makeMove(int row, int col) {
         if (row >= 0 && row < SIZE && col >= 0 && col < SIZE && board[row][col] == 0) {
             board[row][col] = currentPlayer;
-            currentPlayer = 3 - currentPlayer; // Switch to the other player (1 -> 2, 2 -> 1)
+            if (!checkWin()) { // Проверяем, не привел ли ход к победе
+                currentPlayer = 3 - currentPlayer; // Switch to the other player (1 -> 2, 2 -> 1)
+            }
         } else {
             System.err.println("Invalid move!");
         }
     }
 
     public boolean checkWin() {
+        int currentPlayerSign = currentPlayer == 1 ? 1 : 2;
+
         // Check rows
         for (int i = 0; i < SIZE; i++) {
-            if (board[i][0] != 0 && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
+            if (board[i][0] == currentPlayerSign && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
                 return true;
             }
         }
 
         // Check columns
         for (int j = 0; j < SIZE; j++) {
-            if (board[0][j] != 0 && board[0][j] == board[1][j] && board[1][j] == board[2][j]) {
+            if (board[0][j] == currentPlayerSign && board[0][j] == board[1][j] && board[1][j] == board[2][j]) {
                 return true;
             }
         }
 
         // Check diagonals
-        if (board[0][0] != 0 && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+        if (board[0][0] == currentPlayerSign && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
             return true;
         }
-        if (board[0][2] != 0 && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+        if (board[0][2] == currentPlayerSign && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
             return true;
         }
 
@@ -101,26 +119,32 @@ public class TicTakGame {
     }
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         TicTakGame game = loadGame("game_state.txt");
+        if (game == null) {
+            game = new TicTakGame();
+        }
 
-        try (Scanner scanner = new Scanner(System.in)) {
+        boolean playAgain = true;
+        while (playAgain) {
             while (!game.checkWin()) {
                 game.printBoard();
 
-                int row, col;
+                int[] move;
                 do {
                     // Получаем ход игрока 1 (крестик)
                     System.out.println("Player 1 (X) turn:");
-                    String input = scanner.next();
-                    if (input.equalsIgnoreCase("exit")) {
+                    move = getPlayerMove(scanner);
+                    if (move[0] == -1) {
                         game.saveGame("game_state.txt");
                         System.out.println("Game saved. Exiting...");
+                        scanner.close();
                         return;
+                    } else if (move[0] == -2 || game.board[move[0]][move[1]] != 0) {
+                        System.out.println("Invalid move! Please try again.");
                     }
-                    row = Integer.parseInt(input);
-                    col = readCoordinate("column");
-                } while (game.board[row][col] != 0);
-                game.makeMove(row, col);
+                } while (move[0] == -2 || game.board[move[0]][move[1]] != 0);
+                game.makeMove(move[0], move[1]);
 
                 if (game.checkWin()) {
                     break; // Выход из цикла, если кто-то победил
@@ -131,32 +155,42 @@ public class TicTakGame {
                 do {
                     // Получаем ход игрока 2 (нолик)
                     System.out.println("Player 2 (O) turn:");
-                    String input = scanner.next();
-                    if (input.equalsIgnoreCase("exit")) {
+                    move = getPlayerMove(scanner);
+                    if (move[0] == -1) {
                         game.saveGame("game_state.txt");
                         System.out.println("Game saved. Exiting...");
+                        scanner.close();
                         return;
+                    } else if (move[0] == -2 || game.board[move[0]][move[1]] != 0) {
+                        System.out.println("Invalid move! Please try again.");
                     }
-                    row = Integer.parseInt(input);
-                    col = readCoordinate("column");
-                } while (game.board[row][col] != 0);
-                game.makeMove(row, col);
+                } while (move[0] == -2 || game.board[move[0]][move[1]] != 0);
+
+                game.makeMove(move[0], move[1]);
             }
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        game.printBoard();
 
-        // Если игрок 1 победил:
-        if (game.checkWin()) {
-            System.out.println("Player 1 (X) wins!");
-        }
-        // Если игрок 2 победил:
-        else {
-            System.out.println("Player 2 (O) wins!");
+            game.printBoard();
+
+            // Если игрок 1 победил:
+            if (game.checkWin() && game.currentPlayer == 1) {
+                System.out.println("Player 1 (X) wins!");
+            }
+            // Если игрок 2 победил:
+            else if (game.checkWin() && game.currentPlayer == 2) {
+                System.out.println("Player 2 (O) wins!");
+            }
+
+            game.saveGame("game_state.txt");
+
+            System.out.println("Do you want to play again? (y/n): ");
+            String playAgainInput = scanner.next();
+            if (!playAgainInput.equalsIgnoreCase("y")) {
+                playAgain = false;
+            } else {
+                game = new TicTakGame(); // Начинаем новую игру
+            }
         }
 
-        game.saveGame("game_state.txt");
+        scanner.close();
     }
 }
