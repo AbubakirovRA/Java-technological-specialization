@@ -1,0 +1,8 @@
+org\example\JpaBookCreator.class
+org\example\Connector.class
+org\example\HibernateUtil.class
+org\example\Author.class
+org\example\JpaBookLoader.class
+org\example\JpaBookTableCreator.class
+org\example\Book.class
+org\example\Homework.class
