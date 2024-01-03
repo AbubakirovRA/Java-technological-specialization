@@ -54,6 +54,6 @@ public class Homework {
 //команда mvn exec:java -Dexec.mainClass="ru.gb.lesson5.Main" запускает сервер
 //команда mvn exec:java -Dexec.mainClass="ru.gb.lesson5.Client" запускает клиентов
 
-// mvn: Это команда для запуска Maven (Maven – система управления проектами).
-// exec:java: Это цель Maven, предоставляемая плагином exec, который выполняет код на языке Java.
-// -Dexec.mainClass="ru.gb.lesson5.Client": Это параметр командной строки, который указывает класс, содержащий метод main, который нужно выполнить.
+// mvn: команда запуска Maven (Maven – система управления проектами).
+// exec:java: цель Maven, предоставляемая плагином exec, который выполняет код.
+// -Dexec.mainClass="ru.gb.lesson5.Client": параметр командной строки, указывает класс, содержащий метод main, который нужно выполнить.
