@@ -1,0 +1,62 @@
+Установка zip:
+Для установки zip установим Chocolately через PowerShell(под админом):
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+проверим установку - choco -?
+
+установим zip - choco install zip
+
+Установим SDKman:
+Запустим GitBash,выполним команду установки:
+curl -s "https://get.sdkman.io" | bash
+
+После завершения установки, выполним команду для инициализации SDKMAN!:
+
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+или
+
+. "$HOME/.sdkman/bin/sdkman-init.sh"
+
+Проверим установку SDKMAN!:
+sdk version
+
+
+установим Maven:
+sdk install maven
+
+проверим установку - mvn -v
+
+установим Gradle:
+sdk install gradle
+
+проверим установку - gradle -v
+
+Сгенерировать проект Maven:
+из корневого каталога (там где pom.xml) выполнить - mvn archetype:generate -DgroupId=ru.geekbrains -DartifactId=MVNproject -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+Выполнить сборку: mvn install
+предварительно отредактировав секцию build в pom.xml, нужно добавить:
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+Сгенерировать проект Gragle:
+перейти в целевую папку и выполнить (предварительно прописать в переменную PATH путь к папке C:\Users\Рустем\.sdkman\candidates\gradle\8.5\bin):
+gradle init --type java-library (нужно будет выбрать (Domain Specific Language - DSL) Kotlin или Groovy)
+
+выполнить сборку проекта:
+gradle build
+
+
