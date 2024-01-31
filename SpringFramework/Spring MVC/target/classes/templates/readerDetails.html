@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${reader.name} + ' Details'">Reader Details</title>
+  </head>
+  <body>
+    <h2 th:text="${reader.name} + ' Details'"></h2>
+
+    <h3>Books on Hand:</h3>
+
+    <ul>
+      <li th:each="issue : ${reader.issues}" th:text="${issue.book.title}"></li>
+    </ul>
+  </body>
+</html>
