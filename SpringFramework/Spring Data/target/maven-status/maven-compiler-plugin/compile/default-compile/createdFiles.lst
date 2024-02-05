@@ -1,0 +1,4 @@
+ru\gb\springdemo\service\ReaderService.class
+ru\gb\springdemo\repository\ReaderRepository.class
+ru\gb\springdemo\api\controller\ReaderDetailUIController.class
+ru\gb\springdemo\model\Reader.class
