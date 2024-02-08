@@ -1,0 +1,13 @@
+application:
+  max-allowed-books: 15
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb   # Изменить на соответствующую строку подключения для конкретной базы данных (например url: jdbc:mysql://localhost:3306/название_бд)
+    driver-class-name: org.h2.Driver  # Изменить на драйвер конкретной базы данных
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update  # Установить "create" при первом запуске для создания таблиц
+    show-sql: true
