@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issue List</title>
+  </head>
+  <body>
+    <h2>Issue List</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Reader</th>
+          <th>Issued At</th>
+          <th>Returned At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="issue : ${issues}">
+          <td th:text="${issue.book.title}"></td>
+          <td th:text="${issue.reader.name}"></td>
+          <td
+            th:text="${#dates.format(issue.issuedAt, 'yyyy-MM-dd HH:mm')}"
+          ></td>
+          <td
+            th:if="${issue.returnedAt}"
+            th:text="${#dates.format(issue.returnedAt, 'yyyy-MM-dd HH:mm')}"
+          ></td>
+          <td th:unless="${issue.returnedAt}">Not Returned</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
