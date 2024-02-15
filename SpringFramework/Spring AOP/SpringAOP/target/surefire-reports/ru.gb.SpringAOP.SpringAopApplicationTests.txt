@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: ru.gb.SpringAOP.SpringAopApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.851 s -- in ru.gb.SpringAOP.SpringAopApplicationTests

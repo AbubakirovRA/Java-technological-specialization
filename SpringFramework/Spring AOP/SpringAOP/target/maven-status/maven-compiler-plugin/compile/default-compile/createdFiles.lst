@@ -1,0 +1,7 @@
+ru\gb\SpringAOP\ExampleService.class
+ru\gb\SpringAOP\AppConfig.class
+ru\gb\SpringAOP\CustomException.class
+ru\gb\SpringAOP\MethodExecutionAspect.class
+ru\gb\SpringAOP\Timer.class
+ru\gb\SpringAOP\RecoverException.class
+ru\gb\SpringAOP\SpringAopApplication.class
